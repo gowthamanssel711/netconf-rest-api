@@ -6,7 +6,9 @@ Date: July 15, 2023
 from netconf_client.connect import connect_ssh
 from netconf_client.ncclient import Manager
 from netconf_constants.NetConfConstants import NetConfConstants
+import logging
 
+error_log = logging.getLogger("error_logger")
 
 class NetConfController:
 
@@ -23,15 +25,20 @@ class NetConfController:
             self.clients[host] = nc_mgr
             return (True,0)
         except Exception as e:
+            error_log.error(f"connect client error  = {e}")
             return (False,str(e))
         
 
-    def filter_config(self, host: str, user=None, password=None, interface=None):
-        tag = self.nc_const.filter_tag(interface)
-        if host not in self.clients:
-            self.netconf_client(host, user, password)
-        result = self.clients[host].get_config('running', tag).data_xml
-        return result
+    def filter_config(self, host="localhost", user=None, password=None, interface=None):
+        try:
+            tag = self.nc_const.filter_tag(interface)
+            if host not in self.clients:
+                self.netconf_client(host, user, password)
+            result = self.clients[host].get_config('running', tag).data_xml
+            return (str(result),0)
+        except Exception as e:
+            error_log.error(f"filter enterface error = {e}")
+            return (False,str(e))
 
 
 # obj = NetConfController()
