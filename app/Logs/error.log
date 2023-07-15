@@ -1,0 +1,2 @@
+2023-07-16 01:54:10,457 - ERROR - connect client error  = [Errno -3] Temporary failure in name resolution
+2023-07-16 01:54:10,457 - ERROR - filter enterface error = 'localhost1'

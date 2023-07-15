@@ -1,0 +1,2 @@
+2023-07-16 01:53:38,244 - INFO - request to connect client {'host': 'localhost', 'user': 'gowthaman', 'password': '12345'}
+2023-07-16 01:54:10,449 - INFO - request to get interface {'host': 'localhost1', 'interface': 'loopback'}
