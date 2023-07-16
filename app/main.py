@@ -4,8 +4,10 @@ cli execute.
 
 Date: July 15, 2023
 """
+import os
+import sys
 from controller.NetConfController import NetConfController
-from flask import Flask,request,jsonify
+from flask import Flask,request,jsonify,make_response
 from logger.Log import *
 from utils.param_validator import validate_params
 from utils.request_params import *
@@ -66,6 +68,8 @@ def get_interface():
 
     Args:
         host (str): The hostname or IP address of the device.
+        interface (str) : To filter the particular interface. 
+        Without interface payload : return all interfaces.
 
     Returns:
         A JSON response with the interface details and error message.
@@ -87,14 +91,18 @@ def get_interface():
     try:
         client_details = request.get_json()
         interface = netconf_controller.filter_config(**client_details)
+        if interface[0] != False:
+                response = make_response(interface[0])
+                response.headers['Content-Type'] = 'application/xml'
         code = 200
     except Exception as e:
         code = 400
-
-    return jsonify({
+        response = jsonify({
         "interface":interface[0],
         "error":interface[1]
-    }),code
+    })
+
+    return response,code
 
 
 @app.route("/add_interface",methods=["POST"])

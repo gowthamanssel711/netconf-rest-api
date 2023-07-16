@@ -7,6 +7,8 @@ from netconf_client.connect import connect_ssh
 from netconf_client.ncclient import Manager
 from netconf_constants.NetConfConstants import NetConfConstants
 from controller.SSHObject import SSHObject
+import xmltodict
+import xml.dom.minidom
 import logging
 
 error_log = logging.getLogger("error_logger")
@@ -236,10 +238,11 @@ class NetConfController:
                 - Error message describing the failure
         """
         try:
-            tag = self.nc_const.filter_tag(interface)
             if host not in self.clients:
                 self.netconf_client(host, user, password)
+            tag = self.nc_const.filter_tag(interface,all=True if interface == None else False)
             result = self.clients[host].get_config('running', tag).data_xml
+            result = xml.dom.minidom.parseString(result).toprettyxml()
             return (str(result),0)
         except Exception as error:
             error_log.error(f" {self._func_params(locals())} --> ilter enterface error = {error}")

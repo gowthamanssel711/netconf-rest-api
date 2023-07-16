@@ -19,7 +19,7 @@ class NetConfConstants:
     def __init__(self) -> None:
         pass
 
-    def filter_tag(self,interface_name:str)-> str:
+    def filter_tag(self,interface_name:str,all=False)-> str:
         """
         Generates a filter tag for filtering configuration based on an interface name.
 
@@ -30,6 +30,8 @@ class NetConfConstants:
             The generated filter tag as a string.
 
         """
+        if all:
+            return all_interface
         return filter_tag.format(interface_name=interface_name)
 
     def add_configuration(self,name,description,ip,subnetmask,host='')->str:

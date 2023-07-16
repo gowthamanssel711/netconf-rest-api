@@ -11,7 +11,7 @@ filter_tag = """
 """
 
 
-filter_tag_ = """
+all_interface = """
 <filter xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
   <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
     <interface></interface>
