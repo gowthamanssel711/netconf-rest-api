@@ -10,12 +10,38 @@ filter_tag = """
         </filter>
 """
 
+
+filter_tag_ = """
+<filter xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+    <interface></interface>
+  </interfaces>
+</filter>
+"""
+
 add_configuration = """
  <config>
      <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
              <interface>
                      <name>{interface_name}</name>
-                     <description>{interface_description}</description>
+                     <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type"><ianaift:softwareLoopback/></type>
+                      <enabled>true</enabled>
+                     <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+                             <address>
+                                     <ip>{ip_address}</ip>
+                             </address>
+                     </ipv4>
+             </interface>
+     </interfaces>
+</config>
+"""
+
+add_configuration_ori = """
+ <config>
+     <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+             <interface>
+                     <name>{interface_name}</name>
+                     <description>{interface_description}{subnet_mask}</description>
                      <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:softwareLoopback</type>
                      <enabled>true</enabled>
                      <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">

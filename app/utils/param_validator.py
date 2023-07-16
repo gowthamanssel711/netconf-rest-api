@@ -7,7 +7,7 @@ def validate_params(required_params):
         def wrapper(*args, **kwargs):
             if request.method =="GET":
                 params = request.args
-            if request.method =="POST":
+            if request.method =="POST" or "DELETE":
                 params = list(request.get_json().keys())
             missing_params = [param for param in required_params if param not in params]
             if missing_params:

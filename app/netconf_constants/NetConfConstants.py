@@ -13,12 +13,12 @@ class NetConfConstants:
     def filter_tag(self,interface_name:str)-> str:
         return filter_tag.format(interface_name=interface_name)
 
-    def add_configuration(self,interface_name,interface_description,ip_address,subnet_mask)->str:
+    def add_configuration(self,name,description,ip,subnetmask,host='')->str:
         return add_configuration.format(
-            interface_name = interface_name,
-            interface_description = interface_description,
-            ip_address = ip_address,
-            subnet_mask = subnet_mask
+            interface_name = name,
+            interface_description = f"{description} {host}",
+            ip_address = ip,
+            subnet_mask = subnetmask
         )
     
     def delete_configuration(self,operation:str,interface_name:str)->str:

@@ -27,6 +27,8 @@ class NetConfController:
         _param = params.copy()
         _param.pop('self')
         return _param
+    
+
 
     def netconf_client(self, host: str, user: str, password:str, port=830) -> Manager:
         param = self._func_params(locals())
@@ -73,6 +75,30 @@ class NetConfController:
             error_log.error(f"execute cli failed  == {e}")
             op = ('',str(e))
         return op
+
+    def add_interface(self,**args):
+        nc_response = ''
+        try:
+            if (args['host'] not in self.clients):
+                return ('','client not connected')
+            add_tag = self.nc_const.add_configuration(**args)
+            nc_response = self.clients[args['host']].edit_config(add_tag,target='running')
+        except Exception as e:
+            return (nc_response,str(e))
+        return (nc_response,'')
+
+
+    def delete_interface(self,**args):
+        nc_response = ''
+        try:
+            if (args['host'] not in self.clients):
+                return ('','client not connected')
+            delete_tag = self.nc_const.delete_configuration(interface_name=args['interface_name'],operation='delete')
+            print(delete_tag)
+            nc_response = self.clients[args['host']].edit_config(delete_tag,target='running')
+        except Exception as e:
+            return (nc_response,str(e))
+        return (nc_response,'')
 
     def filter_config(self, host="localhost", user=None, password=None, interface=None):
         try:
