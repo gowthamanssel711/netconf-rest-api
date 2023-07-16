@@ -4,8 +4,6 @@ cli execute.
 
 Date: July 15, 2023
 """
-import os
-import sys
 from controller.NetConfController import NetConfController
 from flask import Flask,request,jsonify,make_response
 from logger.Log import *
