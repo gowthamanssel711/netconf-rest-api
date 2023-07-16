@@ -8,12 +8,23 @@ from netconf_client.ncclient import Manager
 from netconf_constants.NetConfConstants import NetConfConstants
 from controller.SSHObject import SSHObject
 import logging
-import inspect
 
 error_log = logging.getLogger("error_logger")
 server_log = logging.getLogger("request_log")
 
 class NetConfController:
+    """
+    A class that provides control and management functionalities for NETCONF operations.
+
+    Methods:
+        - netconf_client: Establishes a NETCONF client connection with the specified device.
+        - ssh_connect: Establishes an SSH connection with the specified host.
+        - execute_cli: Executes a command on the CLI of the specified host.
+        - add_interface: Adds a new interface configuration using NETCONF.
+        - delete_interface: Deletes an interface configuration using NETCONF.
+        - filter_config: Retrieves the filtered configuration for a specific interface using NETCONF.
+
+    """
 
     def __init__(self) -> None:
         self.clients = {}
@@ -31,6 +42,27 @@ class NetConfController:
 
 
     def netconf_client(self, host: str, user: str, password:str, port=830) -> Manager:
+        """
+        Establishes a NETCONF client connection with the specified device.
+
+        Args:
+            host (str): The hostname or IP address of the device.
+            user (str): The username for authentication.
+            password (str): The password for authentication.
+            port (int, optional): The port number for the NETCONF connection. Defaults to 830.
+
+        Returns:
+            If the client connection is established successfully:
+                - An instance of the NETCONF Manager class.
+
+        Raises:
+            If there's an error connecting to the client:
+                - An exception containing the error message.
+
+        Note:
+            This method internally uses SSH or NETCONF connections based on the provided port number.
+
+        """
         param = self._func_params(locals())
         try:
             if port == 22:
@@ -49,6 +81,27 @@ class NetConfController:
             return (False,str(error))
 
     def ssh_connect(self,**args):
+        """
+        Establishes an SSH connection with the specified host.
+
+        Args:
+            host (str): The hostname or IP address of the device.
+            user (str): The username for SSH authentication.
+            password (str): The password for SSH authentication.
+            port (int, optional): The port number for the SSH connection. Defaults to 22.
+
+        Returns:
+            If the SSH connection is established successfully:
+                - An SSHClient object.
+
+        Raises:
+            If there's an error connecting to the SSH host:
+                - An exception containing the error message.
+
+        Note:
+            This method assumes that an SSHClient object is used for establishing the SSH connection.
+
+        """
         try:
            ssh = self.ssh_con.connect_ssh(**args)
            if ssh[1]:
@@ -61,6 +114,23 @@ class NetConfController:
 
 
     def execute_cli(self,**args):
+        """
+        Executes a command on the CLI of the specified host.
+
+        Args:
+            host (str): The hostname or IP address of the device.
+            command (str): The command to be executed on the CLI.
+
+        Returns:
+            A tuple containing the output and error message of the executed command.
+
+        Raises:
+            If there's an error executing the command:
+                - An exception containing the error message.
+
+        Note:
+            This method internally establishes an SSH connection if necessary and uses an SSHClient object for executing the command.
+    ``  """
         op = ('','')
         try:
             if (args['host']) not in self.ssh_clients:
@@ -77,6 +147,28 @@ class NetConfController:
         return op
 
     def add_interface(self,**args):
+        """
+        Adds a new interface configuration using NETCONF.
+
+        Args:
+            host (str): The hostname or IP address of the device.
+            interface_name (str): The name of the interface to be added.
+
+        Returns:
+            A tuple containing the NETCONF response and error message.
+
+            If the interface is successfully added:
+                - '': Netconf response 
+                - '' for the error message
+
+            If there's an error adding the interface:
+                - NETCONF response message
+                - Error message describing the failure
+
+        Note:
+            This method assumes that the NETCONF client is already connected and stored in the 'clients' attribute.
+
+        """
         nc_response = ''
         try:
             if (args['host'] not in self.clients):
@@ -89,6 +181,28 @@ class NetConfController:
 
 
     def delete_interface(self,**args):
+        """
+        Deletes an interface configuration using NETCONF.
+
+        Args:
+            host (str): The hostname or IP address of the device.
+            interface_name (str): The name of the interface to be deleted.
+
+        Returns:
+            A tuple containing the NETCONF response and error message.
+
+            If the interface is successfully deleted:
+                - '': Netconf Response
+                - '' for the error message
+
+            If there's an error deleting the interface:
+                - NETCONF response message
+                - Error message describing the failure
+
+        Note:
+            This method assumes that the NETCONF client is already connected and stored in the 'clients' attribute.
+
+        """
         nc_response = ''
         try:
             if (args['host'] not in self.clients):
@@ -101,6 +215,26 @@ class NetConfController:
         return (nc_response,'')
 
     def filter_config(self, host="localhost", user=None, password=None, interface=None):
+        """
+        Retrieves the filtered configuration for a specific interface using NETCONF.
+
+        Args:
+            host (str): The hostname or IP address of the device. Defaults to "localhost".
+            user (str): The username for authentication. Defaults to None.
+            password (str): The password for authentication. Defaults to None.
+            interface (str): The interface name to filter the configuration. Defaults to None.
+
+        Returns:
+            A tuple containing the filtered configuration and error message.
+
+            If the filtered configuration is successfully retrieved:
+                - The filtered configuration as a string
+                - 0 for the error message
+
+            If there's an error retrieving the filtered configuration:
+                - False for the filtered configuration
+                - Error message describing the failure
+        """
         try:
             tag = self.nc_const.filter_tag(interface)
             if host not in self.clients:
