@@ -1,5 +1,13 @@
 NetConf via REST API
 
+## To run Application
+
+pip3 install -r requirements.txt
+
+cd app
+
+python3 main.py
+
 Run Application server in Container
 
 ## To Build Docker image
